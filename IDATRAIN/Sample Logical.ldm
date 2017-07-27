@@ -454,7 +454,7 @@
     <attributes xmi:id="_PFo70ExkEd2QP50nsiIlqA" name="Unit Description" dataType="CHAR(35)"/>
     <keys xsi:type="LogicalDataModel:PrimaryKey" xmi:id="_HdvWUExkEd2QP50nsiIlqA" name="PrimaryKey" attributes="_G4WxUExkEd2QP50nsiIlqA"/>
   </LogicalDataModel:Entity>
-  <LogicalDataModel:Entity xmi:id="_WJOTUExkEd2QP50nsiIlqA" name="Catalog" abbreviation="CAT_ABBR" package="_VXWA4ExYEd2fdv0L_Kn0sQ" relationshipEnds="_NdAlUU0NEd26mIPEKKaMvg">
+  <LogicalDataModel:Entity xmi:id="_WJOTUExkEd2QP50nsiIlqA" name="Catalog" abbreviation="CAT_ABBR2" package="_VXWA4ExYEd2fdv0L_Kn0sQ" relationshipEnds="_NdAlUU0NEd26mIPEKKaMvg">
     <attributes xmi:id="_X_TrMExkEd2QP50nsiIlqA" name="Catalog Number" dataType="INTEGER" required="true"/>
     <attributes xmi:id="_Z2pAQExkEd2QP50nsiIlqA" name="Stock Number" dataType="INTEGER"/>
     <attributes xmi:id="_cvv7YExkEd2QP50nsiIlqA" name="Catalog Description" dataType="XML"/>
