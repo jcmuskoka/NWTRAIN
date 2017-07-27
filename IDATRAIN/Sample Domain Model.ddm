@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--xtools2_universal_type_manager-->
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:LogicalDataModel="http:///com/ibm/db/models/logical/logical.ecore">
+  <LogicalDataModel:Package xmi:id="_H5u7QE0TEd2Fv-xMwmrN9w" name="Package1" contents="_K2Ia8E0TEd2Fv-xMwmrN9w"/>
+  <LogicalDataModel:AtomicDomain xmi:id="_K2Ia8E0TEd2Fv-xMwmrN9w" name="Number" package="_H5u7QE0TEd2Fv-xMwmrN9w" baseType="INTEGER"/>
+</xmi:XMI>

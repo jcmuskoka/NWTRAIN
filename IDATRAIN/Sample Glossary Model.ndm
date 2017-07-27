@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--xtools2_universal_type_manager-->
+<xmi:XMI xmlns:datamodelversion="http://www.ibm.com/com.ibm.datatools.core/model/data/1.2.0.0" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:NamingModel="http:///com/ibm/db/models/naming/naming.ecore">
+  <NamingModel:NamingStandard xmi:id="_JjPcgExfEd2QP50nsiIlqA" name="NamingStandard" glossaries="_JjPcgUxfEd2QP50nsiIlqA"/>
+  <NamingModel:Glossary xmi:id="_JjPcgUxfEd2QP50nsiIlqA" name="Enterprise" namingStandard="_JjPcgExfEd2QP50nsiIlqA">
+    <words xmi:id="_JjQDkExfEd2QP50nsiIlqA" name="ACCOUNT" description="" abbreviation="ACCT" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjQDkUxfEd2QP50nsiIlqA" name="ACCOUNTS-PAYABLE" description="" abbreviation="AP" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjQDkkxfEd2QP50nsiIlqA" name="ACCOUNTS-RECEIVABLE" description="" abbreviation="AR" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjQDk0xfEd2QP50nsiIlqA" name="ADDRESS" description="" abbreviation="ADR" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQDlExfEd2QP50nsiIlqA" name="AGE" description="" abbreviation="AGE" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQDlUxfEd2QP50nsiIlqA" name="AMOUNT" description="" abbreviation="AMT" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQDlkxfEd2QP50nsiIlqA" name="AVERAGE" description="" abbreviation="AVG" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQDl0xfEd2QP50nsiIlqA" name="BANK" description="" abbreviation="BANK" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjQDmExfEd2QP50nsiIlqA" name="CODE" description="" abbreviation="CD" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQDmUxfEd2QP50nsiIlqA" name="COUNT" description="" abbreviation="CNT" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQDmkxfEd2QP50nsiIlqA" name="CYCLE" description="" abbreviation="CYC" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQqoExfEd2QP50nsiIlqA" name="DATE" description="" abbreviation="DT" alternateAbbreviation="" classification="CLASS" modifier="true"/>
+    <words xmi:id="_JjQqoUxfEd2QP50nsiIlqA" name="DEPARTMENT" description="" abbreviation="DEPT" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjQqokxfEd2QP50nsiIlqA" name="DESCRIPTION" description="" abbreviation="DES" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQqo0xfEd2QP50nsiIlqA" name="EMPLOYEE" description="" abbreviation="EMPL" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjQqpExfEd2QP50nsiIlqA" name="ENVIRONMENT" description="" abbreviation="ENVR" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjQqpUxfEd2QP50nsiIlqA" name="FINANCE" description="" abbreviation="FNC" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjQqpkxfEd2QP50nsiIlqA" name="FIRST" description="" abbreviation="FST" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjQqp0xfEd2QP50nsiIlqA" name="GOVERNMENT" description="" abbreviation="GOVT" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjQqqExfEd2QP50nsiIlqA" name="HEADQUARTERS" description="" abbreviation="HQ" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjQqqUxfEd2QP50nsiIlqA" name="HEIGHT" description="" abbreviation="HGT" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjQqqkxfEd2QP50nsiIlqA" name="HOUR" description="" abbreviation="HR" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjQqq0xfEd2QP50nsiIlqA" name="IDENTIFIER" description="" abbreviation="ID" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRsExfEd2QP50nsiIlqA" name="INFORMATION" description="" abbreviation="INFO" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRsUxfEd2QP50nsiIlqA" name="INDICATOR" description="" abbreviation="IND" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRskxfEd2QP50nsiIlqA" name="LARGE OBJECT" description="" abbreviation="LOG" alternateAbbreviation="" classification="CLASS" status="STANDARD"/>
+    <words xmi:id="_JjRRs0xfEd2QP50nsiIlqA" name="LAST" description="" abbreviation="LAST" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjRRtExfEd2QP50nsiIlqA" name="LENGTH" description="" abbreviation="LEN" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRtUxfEd2QP50nsiIlqA" name="NAME" description="" abbreviation="NM" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRtkxfEd2QP50nsiIlqA" name="NUMBER" description="" abbreviation="NBR" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRt0xfEd2QP50nsiIlqA" name="PAYMENT" description="" abbreviation="PAY" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjRRuExfEd2QP50nsiIlqA" name="PERCENT" description="" abbreviation="PCT" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRuUxfEd2QP50nsiIlqA" name="PROJECT" description="" abbreviation="PROJ" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjRRukxfEd2QP50nsiIlqA" name="QUANTITY" description="" abbreviation="QTY" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRu0xfEd2QP50nsiIlqA" name="RATE" description="" abbreviation="RT" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjRRvExfEd2QP50nsiIlqA" name="RECORD" description="" abbreviation="REC" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4wExfEd2QP50nsiIlqA" name="SALARY" description="" abbreviation="SAL" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjR4wUxfEd2QP50nsiIlqA" name="SCORE" description="" abbreviation="SCR" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4wkxfEd2QP50nsiIlqA" name="SOCIAL-SECURITY-NUMBER" description="" abbreviation="SSN" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4w0xfEd2QP50nsiIlqA" name="SOFTWARE" description="" abbreviation="SFTWR" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjR4xExfEd2QP50nsiIlqA" name="SOLID" description="" abbreviation="SLD" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjR4xUxfEd2QP50nsiIlqA" name="SOLUTION" description="" abbreviation="SLTN" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjR4xkxfEd2QP50nsiIlqA" name="SOUNDEX" description="" abbreviation="SNDX" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjR4x0xfEd2QP50nsiIlqA" name="SOURCE" description="" abbreviation="SRC" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjR4yExfEd2QP50nsiIlqA" name="TEXT" description="" abbreviation="TXT" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4yUxfEd2QP50nsiIlqA" name="TIME" description="" abbreviation="TM" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4ykxfEd2QP50nsiIlqA" name="TIMESTAMP" description="" abbreviation="TS" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4y0xfEd2QP50nsiIlqA" name="TITLE" description="" abbreviation="TTL" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4zExfEd2QP50nsiIlqA" name="VENDOR" description="" abbreviation="VNDR" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjR4zUxfEd2QP50nsiIlqA" name="WEIGHT" description="" abbreviation="WGT" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4zkxfEd2QP50nsiIlqA" name="WIDTH" description="" abbreviation="WID" alternateAbbreviation="" classification="CLASS"/>
+    <words xmi:id="_JjR4z0xfEd2QP50nsiIlqA" name="YEAR" description="" abbreviation="YR" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_JjR40ExfEd2QP50nsiIlqA" name="YEAR-END" description="" abbreviation="YE" alternateAbbreviation="" classification="PRIME"/>
+    <words xmi:id="_JjR40UxfEd2QP50nsiIlqA" name="YEAR-TO-DATE" description="" abbreviation="YTD" alternateAbbreviation="" modifier="true"/>
+    <words xmi:id="_W9WIoUF3EeGvo-5rm_OcLg" name="Catalog" abbreviation="CATLG"/>
+    <words xmi:id="_b0Cx0EF3EeGvo-5rm_OcLg" name="Stock" abbreviation="STK" classification="PRIME" status="ACCEPTED"/>
+    <words xmi:id="_KyaVcEF6EeGvo-5rm_OcLg" name="MANUFACTURER" abbreviation="LOG_Man" classification="PRIME" status="ACCEPTED"/>
+    <words xmi:id="_Ln5zAEF6EeGvo-5rm_OcLg" name="Word2"/>
+    <words xmi:id="_MLExgEF6EeGvo-5rm_OcLg" name="PHYS"/>
+  </NamingModel:Glossary>
+</xmi:XMI>
