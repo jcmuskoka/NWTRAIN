@@ -153,6 +153,9 @@
             <children xsi:type="notation:Shape" xmi:id="_9ekTUG3SEeSTlKpVk3nmvA" type="IEEntityNonKey" element="_vy5NgG3SEeSTlKpVk3nmvA" fontName="Sans">
               <layoutConstraint xsi:type="notation:Bounds" xmi:id="_9ekTUW3SEeSTlKpVk3nmvA"/>
             </children>
+            <children xsi:type="notation:Shape" xmi:id="_qWMzAHMJEeeGkevIwIwahw" type="IEEntityNonKey" element="_pPtsEHMJEeeGkevIwIwahw" fontName="Sans">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_qWMzAXMJEeeGkevIwIwahw"/>
+            </children>
             <styles xsi:type="datanotation:DataListCompartmentStyle" xmi:id="_GQzSwU0MEd26mIPEKKaMvg"/>
             <layoutConstraint xsi:type="notation:Ratio" xmi:id="_UyzwoVshEeS6PowYXBEgag" value="0.885316539608883"/>
           </children>
@@ -458,6 +461,7 @@
     <attributes xmi:id="_iN4_EExkEd2QP50nsiIlqA" name="Catalog Caption" dataType="CHAR(50)"/>
     <attributes xmi:id="_nWugwETFEeSKPM6BZVrlnw" name="Catalog History XML" dataType="XML"/>
     <attributes xmi:id="_vy5NgG3SEeSTlKpVk3nmvA" name="Catalog Last Update Date" dataType="DATE"/>
+    <attributes xmi:id="_pPtsEHMJEeeGkevIwIwahw" name="newatt" dataType="CHAR(5)"/>
     <keys xsi:type="LogicalDataModel:PrimaryKey" xmi:id="_YoWoMExkEd2QP50nsiIlqA" name="PrimaryKey" attributes="_X_TrMExkEd2QP50nsiIlqA" relationshipEnds="_NdAlUU0NEd26mIPEKKaMvg"/>
     <constraints xmi:id="_I6hRMLHnEeCzo9um0PvFhg" name="Constraint1" languageType="ENGLISH"/>
   </LogicalDataModel:Entity>
