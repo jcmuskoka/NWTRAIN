@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--xtools2_universal_type_manager-->
 <xmi:XMI xmlns:datamodelversion="http://www.ibm.com/com.ibm.datatools.core/model/data/1.9.0.0" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:LogicalDataModel="http:///com/ibm/db/models/logical/logical.ecore" xmlns:datanotation="http:///datanotation.ecore" xmlns:ilvglnotation="http://www.ilog.com/views/8.5.0/LayoutNotationExtensionDefinition" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation">
-  <LogicalDataModel:Package xmi:id="_XGeNIH0tEeePo4VhmMTpnA" name="Package1" targetNamespace="LDM1.ldm" namespaceSupported="true" contents="_hhiHsH02EeePo4VhmMTpnA">
+  <LogicalDataModel:Package xmi:id="_XGeNIH0tEeePo4VhmMTpnA" name="Package1" targetNamespace="LDM1.ldm" namespaceSupported="true" contents="_hhiHsH02EeePo4VhmMTpnA _GRiEwH03EeePo4VhmMTpnA">
     <eAnnotations xmi:id="_XGeNIX0tEeePo4VhmMTpnA" source="diagram">
       <contents xsi:type="datanotation:DataDiagram" xmi:id="_XGeNIn0tEeePo4VhmMTpnA" type="IE_CrowFoot" name="Diagram1" viewKind="ProjectExplorer" notation="IE_CrowFoot">
         <eAnnotations xmi:id="_XGeNI30tEeePo4VhmMTpnA" source="Diagram_State">
@@ -24,4 +24,5 @@
     <attributes xmi:id="_mwNzEH02EeePo4VhmMTpnA" name="att1" dataType="CHAR(5)"/>
     <attributes xmi:id="_-j3OcH02EeePo4VhmMTpnA" name="att2" dataType="CHAR(5)"/>
   </LogicalDataModel:Entity>
+  <LogicalDataModel:Entity xmi:id="_GRiEwH03EeePo4VhmMTpnA" name="E2" package="_XGeNIH0tEeePo4VhmMTpnA"/>
 </xmi:XMI>
