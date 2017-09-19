@@ -208,7 +208,30 @@
           </children>
           <styles xsi:type="datanotation:TableStyle" xmi:id="_HPRGIU0MEd26mIPEKKaMvg" fontName="Sans" lineWidth="1"/>
           <styles xsi:type="datanotation:DataListCompartmentStyle" xmi:id="_RNVAtkTFEeSKPM6BZVrlnw" sortingKeys="Natural:Ascending"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_HPRtME0MEd26mIPEKKaMvg" x="11033" y="7355"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_HPRtME0MEd26mIPEKKaMvg" x="9313" y="7037"/>
+        </children>
+        <children xmi:id="_A0xwoJ2CEeek6fEkgzWSSQ" element="_22Q5EJ2BEeek6fEkgzWSSQ">
+          <children xsi:type="notation:Shape" xmi:id="_A0xwpJ2CEeek6fEkgzWSSQ" type="IEEntityName" fontName="Segoe UI">
+            <layoutConstraint xsi:type="notation:Bounds" xmi:id="_A0xwpZ2CEeek6fEkgzWSSQ"/>
+          </children>
+          <children xmi:id="_A066kJ2CEeek6fEkgzWSSQ" type="entity.ie.key.compartment">
+            <styles xsi:type="datanotation:DataListCompartmentStyle" xmi:id="_A066kZ2CEeek6fEkgzWSSQ" sortingKeys=""/>
+          </children>
+          <children xmi:id="_A066kp2CEeek6fEkgzWSSQ" type="entity.ie.nonkey.compartment">
+            <children xsi:type="notation:Shape" xmi:id="_IOVYIZ2CEeek6fEkgzWSSQ" type="IEEntityNonKey" element="_IOVYIJ2CEeek6fEkgzWSSQ" fontName="Segoe UI">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_IOVYIp2CEeek6fEkgzWSSQ"/>
+            </children>
+            <styles xsi:type="datanotation:DataListCompartmentStyle" xmi:id="_A066k52CEeek6fEkgzWSSQ" sortingKeys=""/>
+          </children>
+          <children xmi:id="_A066lJ2CEeek6fEkgzWSSQ" visible="false" type="entity.ie.description.compartment">
+            <children xsi:type="notation:Shape" xmi:id="_A066lp2CEeek6fEkgzWSSQ" type="IEEntityDescription" fontName="Segoe UI">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_A066l52CEeek6fEkgzWSSQ"/>
+            </children>
+            <styles xsi:type="datanotation:DataListCompartmentStyle" xmi:id="_A066lZ2CEeek6fEkgzWSSQ"/>
+          </children>
+          <styles xsi:type="datanotation:DataListCompartmentStyle" xmi:id="_A0xwoZ2CEeek6fEkgzWSSQ" sortingKeys=""/>
+          <styles xsi:type="datanotation:TableStyle" xmi:id="_A0xwo52CEeek6fEkgzWSSQ" fontName="Segoe UI" lineWidth="1"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_A0xwop2CEeek6fEkgzWSSQ" x="14261" y="7937"/>
         </children>
         <styles xsi:type="datanotation:DataAttributeStyle" xmi:id="_zoaWMExZEd2QP50nsiIlqA"/>
         <styles xsi:type="datanotation:DataCompartmentStyle" xmi:id="_zoaWMUxZEd2QP50nsiIlqA"/>
@@ -253,12 +276,47 @@
             <layoutConstraint xsi:type="notation:Location" xmi:id="_DAiwgXJHEeeeUq6EoLwNoA" x="-265" y="661"/>
           </children>
           <styles xsi:type="datanotation:DataLineStyle" xmi:id="_DAY_cXJHEeeeUq6EoLwNoA" fontName="Segoe UI" routing="Rectilinear" lineWidth="1"/>
-          <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_DAY_cnJHEeeeUq6EoLwNoA" points="[-1241, 1826, -6904, -4577]$[-1241, 6429, -6904, 26]$[4077, 6429, -1586, 26]"/>
+          <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_DAY_cnJHEeeeUq6EoLwNoA" points="[-1241, 1825, -5184, -4260]$[-1241, 6111, -5184, 26]$[2357, 6111, -1586, 26]"/>
+        </edges>
+        <edges xmi:id="_IPhq8J2CEeek6fEkgzWSSQ" element="_IOCdMJ2CEeek6fEkgzWSSQ" source="_HPRGIE0MEd26mIPEKKaMvg" target="_A0xwoJ2CEeek6fEkgzWSSQ">
+          <children xmi:id="_IPhq852CEeek6fEkgzWSSQ" type="relationship.ie.name">
+            <children xsi:type="notation:Shape" xmi:id="_IPhq9Z2CEeek6fEkgzWSSQ" type="IERelationship.name" fontName="Segoe UI">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_IPhq9p2CEeek6fEkgzWSSQ"/>
+            </children>
+            <layoutConstraint xsi:type="notation:Location" xmi:id="_IPhq9J2CEeek6fEkgzWSSQ" y="-186"/>
+          </children>
+          <children xmi:id="_IPhq952CEeek6fEkgzWSSQ" type="relationship.ie.child.name">
+            <children xsi:type="notation:Shape" xmi:id="_IPhq-Z2CEeek6fEkgzWSSQ" type="IERelationship.childname" fontName="Segoe UI">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_IPhq-p2CEeek6fEkgzWSSQ"/>
+            </children>
+            <layoutConstraint xsi:type="notation:Location" xmi:id="_IPhq-J2CEeek6fEkgzWSSQ" x="-265" y="-662"/>
+          </children>
+          <children xmi:id="_IPhq-52CEeek6fEkgzWSSQ" type="relationship.ie.parent.name">
+            <children xsi:type="notation:Shape" xmi:id="_IPrb8J2CEeek6fEkgzWSSQ" type="IERelationship.parentname" fontName="Segoe UI">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_IPrb8Z2CEeek6fEkgzWSSQ"/>
+            </children>
+            <layoutConstraint xsi:type="notation:Location" xmi:id="_IPhq_J2CEeek6fEkgzWSSQ" y="-397"/>
+          </children>
+          <children xmi:id="_IPrb8p2CEeek6fEkgzWSSQ" type="relationship.ie.ri">
+            <children xsi:type="notation:Shape" xmi:id="_IPrb9J2CEeek6fEkgzWSSQ" type="IERelationship.ri" fontName="Segoe UI">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_IPrb9Z2CEeek6fEkgzWSSQ"/>
+            </children>
+            <layoutConstraint xsi:type="notation:Location" xmi:id="_IPrb852CEeek6fEkgzWSSQ" x="-265" y="-662"/>
+          </children>
+          <children xmi:id="_IPrb9p2CEeek6fEkgzWSSQ" type="relationship.ie.child.cardinality.name">
+            <children xsi:type="notation:Shape" xmi:id="_IPrb-J2CEeek6fEkgzWSSQ" type="IERelationship.childcardinalityname" fontName="Segoe UI">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_IPrb-Z2CEeek6fEkgzWSSQ"/>
+            </children>
+            <layoutConstraint xsi:type="notation:Location" xmi:id="_IPrb952CEeek6fEkgzWSSQ" x="-265" y="661"/>
+          </children>
+          <styles xsi:type="datanotation:DataLineStyle" xmi:id="_IPhq8Z2CEeek6fEkgzWSSQ" fontName="Segoe UI" routing="Rectilinear" lineWidth="1"/>
+          <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_IPhq8p2CEeek6fEkgzWSSQ" points="[-24, -9, -3916, -701]$[1776, -9, -2116, -701]"/>
+          <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_IP0l4J2CEeek6fEkgzWSSQ" id="(1.0,0.32400279916025193)"/>
         </edges>
       </contents>
     </eAnnotations>
   </LogicalDataModel:Package>
-  <LogicalDataModel:Package xmi:id="_yXzT0ExiEd2QP50nsiIlqA" name="Sales" namespaceSupported="true" parent="_Qo7J8ExYEd2fdv0L_Kn0sQ" contents="_z9jwsExiEd2QP50nsiIlqA _PFoxQExjEd2QP50nsiIlqA _c4i5k4uxEeSTHay5hhfdoA">
+  <LogicalDataModel:Package xmi:id="_yXzT0ExiEd2QP50nsiIlqA" name="Sales" namespaceSupported="true" parent="_Qo7J8ExYEd2fdv0L_Kn0sQ" contents="_z9jwsExiEd2QP50nsiIlqA _PFoxQExjEd2QP50nsiIlqA _c4i5k4uxEeSTHay5hhfdoA _22Q5EJ2BEeek6fEkgzWSSQ">
     <eAnnotations xmi:id="_JQaXIE0PEd2Fv-xMwmrN9w" source="diagram">
       <contents xsi:type="datanotation:DataDiagram" xmi:id="_JQpAoE0PEd2Fv-xMwmrN9w" type="IE_CrowFoot" name="Sales" viewKind="ProjectExplorer" notation="IE_CrowFoot">
         <children xmi:id="_KRlgQE0PEd2Fv-xMwmrN9w" element="_z9jwsExiEd2QP50nsiIlqA">
@@ -446,15 +504,15 @@
     <keys xsi:type="LogicalDataModel:PrimaryKey" xmi:id="_SRlI0ExjEd2QP50nsiIlqA" name="PrimaryKey" attributes="_RcFrQExjEd2QP50nsiIlqA" relationshipEnds="_c4i5kYuxEeSTHay5hhfdoA"/>
     <keys xsi:type="LogicalDataModel:ForeignKey" xmi:id="_Wt66kE0OEd28i6stIj6WzA" name="ForeignKey1" attributes="_YAAEMExjEd2QP50nsiIlqA" relationshipEnds="_Wt4eUk0OEd28i6stIj6WzA"/>
   </LogicalDataModel:Entity>
-  <LogicalDataModel:Entity xmi:id="_FB17oExkEd2QP50nsiIlqA" name="Stock" package="_VXWA4ExYEd2fdv0L_Kn0sQ" relationshipEnds="_NdAlUk0NEd26mIPEKKaMvg" relationships="_NdAlUE0NEd26mIPEKKaMvg">
+  <LogicalDataModel:Entity xmi:id="_FB17oExkEd2QP50nsiIlqA" name="Stock" package="_VXWA4ExYEd2fdv0L_Kn0sQ" relationshipEnds="_NdAlUk0NEd26mIPEKKaMvg _IOCdMZ2CEeek6fEkgzWSSQ" relationships="_NdAlUE0NEd26mIPEKKaMvg">
     <attributes xmi:id="_G4WxUExkEd2QP50nsiIlqA" name="Stock Number" dataType="SHORT" required="true"/>
     <attributes xmi:id="_KDIrQExkEd2QP50nsiIlqA" name="Description" dataType="CHAR(200)"/>
     <attributes xmi:id="_LP9DsExkEd2QP50nsiIlqA" name="Unit Price" dataType="DECIMAL(8,2)"/>
     <attributes xmi:id="_NxEVkExkEd2QP50nsiIlqA" name="Unit" dataType="CHAR(10)"/>
     <attributes xmi:id="_PFo70ExkEd2QP50nsiIlqA" name="Unit Description" dataType="CHAR(35)"/>
-    <keys xsi:type="LogicalDataModel:PrimaryKey" xmi:id="_HdvWUExkEd2QP50nsiIlqA" name="PrimaryKey" attributes="_G4WxUExkEd2QP50nsiIlqA"/>
+    <keys xsi:type="LogicalDataModel:PrimaryKey" xmi:id="_HdvWUExkEd2QP50nsiIlqA" name="PrimaryKey" attributes="_G4WxUExkEd2QP50nsiIlqA" relationshipEnds="_IOCdMZ2CEeek6fEkgzWSSQ"/>
   </LogicalDataModel:Entity>
-  <LogicalDataModel:Entity xmi:id="_WJOTUExkEd2QP50nsiIlqA" name="Catalog" abbreviation="CAT_ABBR2" package="_VXWA4ExYEd2fdv0L_Kn0sQ" relationshipEnds="_NdAlUU0NEd26mIPEKKaMvg">
+  <LogicalDataModel:Entity xmi:id="_WJOTUExkEd2QP50nsiIlqA" name="Catalog" description="this is the catalog definition" abbreviation="CAT_ABBR2" package="_VXWA4ExYEd2fdv0L_Kn0sQ" relationshipEnds="_NdAlUU0NEd26mIPEKKaMvg">
     <attributes xmi:id="_X_TrMExkEd2QP50nsiIlqA" name="Catalog Number" dataType="INTEGER" required="true"/>
     <attributes xmi:id="_Z2pAQExkEd2QP50nsiIlqA" name="Stock Number" dataType="INTEGER"/>
     <attributes xmi:id="_cvv7YExkEd2QP50nsiIlqA" name="Catalog Description" dataType="XML"/>
@@ -507,4 +565,12 @@
     <keys xsi:type="LogicalDataModel:ForeignKey" xmi:id="_c4i5m4uxEeSTHay5hhfdoA" name="ForeignKey1" attributes="_c4i5lYuxEeSTHay5hhfdoA" relationshipEnds="_c4i5kouxEeSTHay5hhfdoA"/>
     <generalizationSets xmi:id="_c4i5nIuxEeSTHay5hhfdoA" name="Generalization Set1"/>
   </LogicalDataModel:Entity>
+  <LogicalDataModel:Entity xmi:id="_22Q5EJ2BEeek6fEkgzWSSQ" name="salespkg child of stock" package="_yXzT0ExiEd2QP50nsiIlqA" relationshipEnds="_IOCdMp2CEeek6fEkgzWSSQ" relationships="_IOCdMJ2CEeek6fEkgzWSSQ">
+    <attributes xmi:id="_IOVYIJ2CEeek6fEkgzWSSQ" name="Stock Number" dataType="SHORT" required="true"/>
+    <keys xsi:type="LogicalDataModel:ForeignKey" xmi:id="_IOCdM52CEeek6fEkgzWSSQ" name="ForeignKey" attributes="_IOVYIJ2CEeek6fEkgzWSSQ" relationshipEnds="_IOCdMp2CEeek6fEkgzWSSQ"/>
+  </LogicalDataModel:Entity>
+  <LogicalDataModel:Relationship xmi:id="_IOCdMJ2CEeek6fEkgzWSSQ" name="salespkg child of stock_Stock_FK" relationshipType="NON_IDENTIFYING" owningEntity="_22Q5EJ2BEeek6fEkgzWSSQ">
+    <relationshipEnds xmi:id="_IOCdMZ2CEeek6fEkgzWSSQ" cardinality="ONE" entity="_FB17oExkEd2QP50nsiIlqA" key="_HdvWUExkEd2QP50nsiIlqA"/>
+    <relationshipEnds xmi:id="_IOCdMp2CEeek6fEkgzWSSQ" verbPhrase="Verb1" cardinality="ZERO_TO_MANY" entity="_22Q5EJ2BEeek6fEkgzWSSQ" key="_IOCdM52CEeek6fEkgzWSSQ"/>
+  </LogicalDataModel:Relationship>
 </xmi:XMI>
