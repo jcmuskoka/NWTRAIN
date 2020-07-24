@@ -1,1 +1,1 @@
-This is a text file that can be used to demonstrate collaboration
+joe made a change --- This is a text file that can be used to demonstrate collaboration
