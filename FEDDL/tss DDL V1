@@ -1,0 +1,1264 @@
+
+CREATE TABLE [CALL]
+( 
+	[call_number]        char(18)  NOT NULL ,
+	[problem_number]     char(18)  NOT NULL ,
+	[support_representative_number] char(18)  NOT NULL ,
+	[call_contact_first_name] char(18)  NULL ,
+	[call_contact_last_name] char(18)  NULL ,
+	[call_contact_phone_number] char(18)  NULL ,
+	[call_notes]         char(18)  NULL ,
+	[call_reason_code]   char(18)  NULL ,
+	[call_date_time]     char(18)  NULL 
+)
+go
+
+ALTER TABLE [CALL]
+	ADD CONSTRAINT [XPKCALL] PRIMARY KEY  CLUSTERED ([call_number] ASC,[problem_number] ASC)
+go
+
+CREATE TABLE [PROBLEM]
+( 
+	[problem_number]     char(18)  NOT NULL ,
+	[support_representative_number] char(18)  NOT NULL ,
+	[known_issue_number] char(18)  NULL ,
+	[problem_open_date_time] char(18)  NULL ,
+	[problem_actions_taken] char(18)  NULL ,
+	[problem_status]     char(18)  NULL ,
+	[problem_severity]   char(18)  NULL ,
+	[problem_description] char(18)  NULL 
+)
+go
+
+ALTER TABLE [PROBLEM]
+	ADD CONSTRAINT [XPKPROBLEM] PRIMARY KEY  CLUSTERED ([problem_number] ASC)
+go
+
+CREATE TABLE [PROBLEM_PRODUCT]
+( 
+	[problem_number]     char(18)  NOT NULL ,
+	[product_code]       char(18)  NOT NULL 
+)
+go
+
+ALTER TABLE [PROBLEM_PRODUCT]
+	ADD CONSTRAINT [XPKPROBLEM_PRODUCT] PRIMARY KEY  CLUSTERED ([problem_number] ASC,[product_code] ASC)
+go
+
+CREATE TABLE [PRODUCT]
+( 
+	[product_code]       char(18)  NOT NULL ,
+	[product_manufacturer] char(18)  NULL ,
+	[product_name]       char(18)  NULL 
+)
+go
+
+ALTER TABLE [PRODUCT]
+	ADD CONSTRAINT [XPKPRODUCT] PRIMARY KEY  CLUSTERED ([product_code] ASC)
+go
+
+CREATE TABLE [PRODUCT_SOLUTION]
+( 
+	[product_code]       char(18)  NOT NULL ,
+	[known_issue_number] char(18)  NOT NULL 
+)
+go
+
+ALTER TABLE [PRODUCT_SOLUTION]
+	ADD CONSTRAINT [XPKPRODUCT_SOLUTION] PRIMARY KEY  CLUSTERED ([product_code] ASC,[known_issue_number] ASC)
+go
+
+CREATE TABLE [SOLUTION]
+( 
+	[known_issue_number] char(18)  NOT NULL ,
+	[known_issue_description] char(18)  NULL ,
+	[known_issue_workaround] char(18)  NULL ,
+	[add1]               char(18)  NULL ,
+	[add2]               char(18)  NULL 
+)
+go
+
+ALTER TABLE [SOLUTION]
+	ADD CONSTRAINT [XPKSOLUTION] PRIMARY KEY  CLUSTERED ([known_issue_number] ASC)
+go
+
+CREATE TABLE [SUPPORT_REPRESENTATIVE]
+( 
+	[support_representative_number] char(18)  NOT NULL ,
+	[support_representative_first_name] char(18)  NULL ,
+	[support_representative_last_name] char(18)  NULL ,
+	[support_representative_level] char(18)  NULL ,
+	[support_representative_phone_number] numeric(10)  NULL ,
+	[support_representative_fax_number] numeric(10)  NULL ,
+	[support_representative_email_address] char(18)  NULL 
+)
+go
+
+ALTER TABLE [SUPPORT_REPRESENTATIVE]
+	ADD CONSTRAINT [XPKSUPPORT_REPRESENTATIVE] PRIMARY KEY  CLUSTERED ([support_representative_number] ASC)
+go
+
+
+ALTER TABLE [CALL]
+	ADD CONSTRAINT [handles] FOREIGN KEY ([support_representative_number]) REFERENCES [SUPPORT_REPRESENTATIVE]([support_representative_number])
+go
+
+ALTER TABLE [CALL]
+	ADD CONSTRAINT [is_tracked_by] FOREIGN KEY ([problem_number]) REFERENCES [PROBLEM]([problem_number])
+go
+
+
+ALTER TABLE [PROBLEM]
+	ADD CONSTRAINT [applies_to] FOREIGN KEY ([known_issue_number]) REFERENCES [SOLUTION]([known_issue_number])
+		ON DELETE SET NULL
+		ON UPDATE SET NULL
+go
+
+ALTER TABLE [PROBLEM]
+	ADD CONSTRAINT [is_responsible_for] FOREIGN KEY ([support_representative_number]) REFERENCES [SUPPORT_REPRESENTATIVE]([support_representative_number])
+go
+
+
+ALTER TABLE [PROBLEM_PRODUCT]
+	ADD CONSTRAINT [R_12] FOREIGN KEY ([problem_number]) REFERENCES [PROBLEM]([problem_number])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+ALTER TABLE [PROBLEM_PRODUCT]
+	ADD CONSTRAINT [R_13] FOREIGN KEY ([product_code]) REFERENCES [PRODUCT]([product_code])
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+go
+
+
+ALTER TABLE [PRODUCT_SOLUTION]
+	ADD CONSTRAINT [relates_to] FOREIGN KEY ([product_code]) REFERENCES [PRODUCT]([product_code])
+go
+
+ALTER TABLE [PRODUCT_SOLUTION]
+	ADD CONSTRAINT [is_referenced_in] FOREIGN KEY ([known_issue_number]) REFERENCES [SOLUTION]([known_issue_number])
+go
+
+
+CREATE TRIGGER tI_CALL ON CALL FOR INSERT AS
+/* erwin Builtin Trigger */
+/* INSERT trigger on CALL */
+BEGIN
+   DECLARE @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* PROBLEM is tracked by CALL on child insert restrict */
+  /* ERWIN_RELATION:CHECKSUM="0003220a", PARENT_OWNER="", PARENT_TABLE="PROBLEM"
+    CHILD_OWNER="", CHILD_TABLE="CALL"
+    P2C_VERB_PHRASE="is tracked by", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_tracked_by", FK_COLUMNS="problem_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(problem_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,PROBLEM
+        WHERE
+          /* %JoinFKPK(inserted,PROBLEM) */
+          inserted.problem_number = PROBLEM.problem_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," and") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30002,
+             @errmsg = 'Cannot insert CALL because PROBLEM does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* SUPPORT_REPRESENTATIVE handles CALL on child insert restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SUPPORT_REPRESENTATIVE"
+    CHILD_OWNER="", CHILD_TABLE="CALL"
+    P2C_VERB_PHRASE="handles", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="handles", FK_COLUMNS="support_representative_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(support_representative_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,SUPPORT_REPRESENTATIVE
+        WHERE
+          /* %JoinFKPK(inserted,SUPPORT_REPRESENTATIVE) */
+          inserted.support_representative_number = SUPPORT_REPRESENTATIVE.support_representative_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," and") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30002,
+             @errmsg = 'Cannot insert CALL because SUPPORT_REPRESENTATIVE does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_CALL ON CALL FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on CALL */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @inscall_number char(18), 
+           @insproblem_number char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* PROBLEM is tracked by CALL on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00032391", PARENT_OWNER="", PARENT_TABLE="PROBLEM"
+    CHILD_OWNER="", CHILD_TABLE="CALL"
+    P2C_VERB_PHRASE="is tracked by", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_tracked_by", FK_COLUMNS="problem_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(problem_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,PROBLEM
+        WHERE
+          /* %JoinFKPK(inserted,PROBLEM) */
+          inserted.problem_number = PROBLEM.problem_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update CALL because PROBLEM does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* SUPPORT_REPRESENTATIVE handles CALL on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SUPPORT_REPRESENTATIVE"
+    CHILD_OWNER="", CHILD_TABLE="CALL"
+    P2C_VERB_PHRASE="handles", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="handles", FK_COLUMNS="support_representative_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(support_representative_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,SUPPORT_REPRESENTATIVE
+        WHERE
+          /* %JoinFKPK(inserted,SUPPORT_REPRESENTATIVE) */
+          inserted.support_representative_number = SUPPORT_REPRESENTATIVE.support_representative_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update CALL because SUPPORT_REPRESENTATIVE does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_PROBLEM ON PROBLEM FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on PROBLEM */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* PROBLEM  PROBLEM_PRODUCT on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00021ad7", PARENT_OWNER="", PARENT_TABLE="PROBLEM"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM_PRODUCT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="problem_number" */
+    IF EXISTS (
+      SELECT * FROM deleted,PROBLEM_PRODUCT
+      WHERE
+        /*  %JoinFKPK(PROBLEM_PRODUCT,deleted," = "," AND") */
+        PROBLEM_PRODUCT.problem_number = deleted.problem_number
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete PROBLEM because PROBLEM_PRODUCT exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* PROBLEM is tracked by CALL on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PROBLEM"
+    CHILD_OWNER="", CHILD_TABLE="CALL"
+    P2C_VERB_PHRASE="is tracked by", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_tracked_by", FK_COLUMNS="problem_number" */
+    IF EXISTS (
+      SELECT * FROM deleted,CALL
+      WHERE
+        /*  %JoinFKPK(CALL,deleted," = "," AND") */
+        CALL.problem_number = deleted.problem_number
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete PROBLEM because CALL exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tI_PROBLEM ON PROBLEM FOR INSERT AS
+/* erwin Builtin Trigger */
+/* INSERT trigger on PROBLEM */
+BEGIN
+   DECLARE @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* SUPPORT_REPRESENTATIVE is responsible for PROBLEM on child insert restrict */
+  /* ERWIN_RELATION:CHECKSUM="00030b5d", PARENT_OWNER="", PARENT_TABLE="SUPPORT_REPRESENTATIVE"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM"
+    P2C_VERB_PHRASE="is responsible for", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_responsible_for", FK_COLUMNS="support_representative_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(support_representative_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,SUPPORT_REPRESENTATIVE
+        WHERE
+          /* %JoinFKPK(inserted,SUPPORT_REPRESENTATIVE) */
+          inserted.support_representative_number = SUPPORT_REPRESENTATIVE.support_representative_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," and") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30002,
+             @errmsg = 'Cannot insert PROBLEM because SUPPORT_REPRESENTATIVE does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* SOLUTION applies to PROBLEM on child insert set null */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SOLUTION"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM"
+    P2C_VERB_PHRASE="applies to", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="applies_to", FK_COLUMNS="known_issue_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(known_issue_number)
+  BEGIN
+    UPDATE PROBLEM
+      SET
+        /* %SetFK(PROBLEM,NULL) */
+        PROBLEM.known_issue_number = NULL
+      FROM PROBLEM,inserted
+      WHERE
+        /* %JoinPKPK(PROBLEM,inserted," = "," AND") */
+       PROBLEM.problem_number = inserted.problem_number AND
+        
+        NOT EXISTS (
+          SELECT * FROM SOLUTION
+          WHERE
+            /* %JoinFKPK(inserted,SOLUTION," = "," AND") */
+            inserted.known_issue_number = SOLUTION.known_issue_number
+        )
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_PROBLEM ON PROBLEM FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on PROBLEM */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insproblem_number char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* PROBLEM  PROBLEM_PRODUCT on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00052b38", PARENT_OWNER="", PARENT_TABLE="PROBLEM"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM_PRODUCT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="problem_number" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(problem_number)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,PROBLEM_PRODUCT
+      WHERE
+        /*  %JoinFKPK(PROBLEM_PRODUCT,deleted," = "," AND") */
+        PROBLEM_PRODUCT.problem_number = deleted.problem_number
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update PROBLEM because PROBLEM_PRODUCT exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* PROBLEM is tracked by CALL on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PROBLEM"
+    CHILD_OWNER="", CHILD_TABLE="CALL"
+    P2C_VERB_PHRASE="is tracked by", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_tracked_by", FK_COLUMNS="problem_number" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(problem_number)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,CALL
+      WHERE
+        /*  %JoinFKPK(CALL,deleted," = "," AND") */
+        CALL.problem_number = deleted.problem_number
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update PROBLEM because CALL exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* SUPPORT_REPRESENTATIVE is responsible for PROBLEM on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SUPPORT_REPRESENTATIVE"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM"
+    P2C_VERB_PHRASE="is responsible for", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_responsible_for", FK_COLUMNS="support_representative_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(support_representative_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,SUPPORT_REPRESENTATIVE
+        WHERE
+          /* %JoinFKPK(inserted,SUPPORT_REPRESENTATIVE) */
+          inserted.support_representative_number = SUPPORT_REPRESENTATIVE.support_representative_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update PROBLEM because SUPPORT_REPRESENTATIVE does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* SOLUTION applies to PROBLEM on child update set null */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SOLUTION"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM"
+    P2C_VERB_PHRASE="applies to", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="applies_to", FK_COLUMNS="known_issue_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(known_issue_number)
+  BEGIN
+    UPDATE PROBLEM
+      SET
+        /* %SetFK(PROBLEM,NULL) */
+        PROBLEM.known_issue_number = NULL
+      FROM PROBLEM,inserted
+      WHERE
+        /* %JoinPKPK(PROBLEM,inserted," = "," AND") */
+       PROBLEM.problem_number = inserted.problem_number AND
+        
+        NOT EXISTS (
+          SELECT * FROM SOLUTION
+          WHERE
+            /* %JoinFKPK(inserted,SOLUTION," = "," AND") */
+            inserted.known_issue_number = SOLUTION.known_issue_number
+        )
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_PROBLEM_PRODUCT ON PROBLEM_PRODUCT FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on PROBLEM_PRODUCT */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* PRODUCT  PROBLEM_PRODUCT on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="0002a150", PARENT_OWNER="", PARENT_TABLE="PRODUCT"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM_PRODUCT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="product_code" */
+    IF EXISTS (SELECT * FROM deleted,PRODUCT
+      WHERE
+        /* %JoinFKPK(deleted,PRODUCT," = "," AND") */
+        deleted.product_code = PRODUCT.product_code AND
+        NOT EXISTS (
+          SELECT * FROM PROBLEM_PRODUCT
+          WHERE
+            /* %JoinFKPK(PROBLEM_PRODUCT,PRODUCT," = "," AND") */
+            PROBLEM_PRODUCT.product_code = PRODUCT.product_code
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last PROBLEM_PRODUCT because PRODUCT exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* PROBLEM  PROBLEM_PRODUCT on child delete no action */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PROBLEM"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM_PRODUCT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="problem_number" */
+    IF EXISTS (SELECT * FROM deleted,PROBLEM
+      WHERE
+        /* %JoinFKPK(deleted,PROBLEM," = "," AND") */
+        deleted.problem_number = PROBLEM.problem_number AND
+        NOT EXISTS (
+          SELECT * FROM PROBLEM_PRODUCT
+          WHERE
+            /* %JoinFKPK(PROBLEM_PRODUCT,PROBLEM," = "," AND") */
+            PROBLEM_PRODUCT.problem_number = PROBLEM.problem_number
+        )
+    )
+    BEGIN
+      SELECT @errno  = 30010,
+             @errmsg = 'Cannot delete last PROBLEM_PRODUCT because PROBLEM exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_PROBLEM_PRODUCT ON PROBLEM_PRODUCT FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on PROBLEM_PRODUCT */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insproblem_number char(18), 
+           @insproduct_code char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* PRODUCT  PROBLEM_PRODUCT on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="0002c1df", PARENT_OWNER="", PARENT_TABLE="PRODUCT"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM_PRODUCT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="product_code" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(product_code)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,PRODUCT
+        WHERE
+          /* %JoinFKPK(inserted,PRODUCT) */
+          inserted.product_code = PRODUCT.product_code
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update PROBLEM_PRODUCT because PRODUCT does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* PROBLEM  PROBLEM_PRODUCT on child update no action */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PROBLEM"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM_PRODUCT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="problem_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(problem_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,PROBLEM
+        WHERE
+          /* %JoinFKPK(inserted,PROBLEM) */
+          inserted.problem_number = PROBLEM.problem_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update PROBLEM_PRODUCT because PROBLEM does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_PRODUCT ON PRODUCT FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on PRODUCT */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* PRODUCT  PROBLEM_PRODUCT on parent delete no action */
+    /* ERWIN_RELATION:CHECKSUM="000242fd", PARENT_OWNER="", PARENT_TABLE="PRODUCT"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM_PRODUCT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="product_code" */
+    IF EXISTS (
+      SELECT * FROM deleted,PROBLEM_PRODUCT
+      WHERE
+        /*  %JoinFKPK(PROBLEM_PRODUCT,deleted," = "," AND") */
+        PROBLEM_PRODUCT.product_code = deleted.product_code
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete PRODUCT because PROBLEM_PRODUCT exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* PRODUCT relates to PRODUCT_SOLUTION on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PRODUCT"
+    CHILD_OWNER="", CHILD_TABLE="PRODUCT_SOLUTION"
+    P2C_VERB_PHRASE="relates to", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="relates_to", FK_COLUMNS="product_code" */
+    IF EXISTS (
+      SELECT * FROM deleted,PRODUCT_SOLUTION
+      WHERE
+        /*  %JoinFKPK(PRODUCT_SOLUTION,deleted," = "," AND") */
+        PRODUCT_SOLUTION.product_code = deleted.product_code
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete PRODUCT because PRODUCT_SOLUTION exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_PRODUCT ON PRODUCT FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on PRODUCT */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insproduct_code char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* PRODUCT  PROBLEM_PRODUCT on parent update no action */
+  /* ERWIN_RELATION:CHECKSUM="00027220", PARENT_OWNER="", PARENT_TABLE="PRODUCT"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM_PRODUCT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="product_code" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(product_code)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,PROBLEM_PRODUCT
+      WHERE
+        /*  %JoinFKPK(PROBLEM_PRODUCT,deleted," = "," AND") */
+        PROBLEM_PRODUCT.product_code = deleted.product_code
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update PRODUCT because PROBLEM_PRODUCT exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* PRODUCT relates to PRODUCT_SOLUTION on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PRODUCT"
+    CHILD_OWNER="", CHILD_TABLE="PRODUCT_SOLUTION"
+    P2C_VERB_PHRASE="relates to", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="relates_to", FK_COLUMNS="product_code" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(product_code)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,PRODUCT_SOLUTION
+      WHERE
+        /*  %JoinFKPK(PRODUCT_SOLUTION,deleted," = "," AND") */
+        PRODUCT_SOLUTION.product_code = deleted.product_code
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update PRODUCT because PRODUCT_SOLUTION exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tI_PRODUCT_SOLUTION ON PRODUCT_SOLUTION FOR INSERT AS
+/* erwin Builtin Trigger */
+/* INSERT trigger on PRODUCT_SOLUTION */
+BEGIN
+   DECLARE @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* SOLUTION is referenced in PRODUCT_SOLUTION on child insert restrict */
+  /* ERWIN_RELATION:CHECKSUM="0002f945", PARENT_OWNER="", PARENT_TABLE="SOLUTION"
+    CHILD_OWNER="", CHILD_TABLE="PRODUCT_SOLUTION"
+    P2C_VERB_PHRASE="is referenced in", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_referenced_in", FK_COLUMNS="known_issue_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(known_issue_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,SOLUTION
+        WHERE
+          /* %JoinFKPK(inserted,SOLUTION) */
+          inserted.known_issue_number = SOLUTION.known_issue_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," and") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30002,
+             @errmsg = 'Cannot insert PRODUCT_SOLUTION because SOLUTION does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* PRODUCT relates to PRODUCT_SOLUTION on child insert restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PRODUCT"
+    CHILD_OWNER="", CHILD_TABLE="PRODUCT_SOLUTION"
+    P2C_VERB_PHRASE="relates to", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="relates_to", FK_COLUMNS="product_code" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(product_code)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,PRODUCT
+        WHERE
+          /* %JoinFKPK(inserted,PRODUCT) */
+          inserted.product_code = PRODUCT.product_code
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," and") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30002,
+             @errmsg = 'Cannot insert PRODUCT_SOLUTION because PRODUCT does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_PRODUCT_SOLUTION ON PRODUCT_SOLUTION FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on PRODUCT_SOLUTION */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insproduct_code char(18), 
+           @insknown_issue_number char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* SOLUTION is referenced in PRODUCT_SOLUTION on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0002e1c6", PARENT_OWNER="", PARENT_TABLE="SOLUTION"
+    CHILD_OWNER="", CHILD_TABLE="PRODUCT_SOLUTION"
+    P2C_VERB_PHRASE="is referenced in", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_referenced_in", FK_COLUMNS="known_issue_number" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(known_issue_number)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,SOLUTION
+        WHERE
+          /* %JoinFKPK(inserted,SOLUTION) */
+          inserted.known_issue_number = SOLUTION.known_issue_number
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update PRODUCT_SOLUTION because SOLUTION does not exist.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* PRODUCT relates to PRODUCT_SOLUTION on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PRODUCT"
+    CHILD_OWNER="", CHILD_TABLE="PRODUCT_SOLUTION"
+    P2C_VERB_PHRASE="relates to", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="relates_to", FK_COLUMNS="product_code" */
+  IF
+    /* %ChildFK(" OR",UPDATE) */
+    UPDATE(product_code)
+  BEGIN
+    SELECT @nullcnt = 0
+    SELECT @validcnt = count(*)
+      FROM inserted,PRODUCT
+        WHERE
+          /* %JoinFKPK(inserted,PRODUCT) */
+          inserted.product_code = PRODUCT.product_code
+    /* %NotnullFK(inserted," IS NULL","select @nullcnt = count(*) from inserted where"," AND") */
+    
+    IF @validcnt + @nullcnt != @numrows
+    BEGIN
+      SELECT @errno  = 30007,
+             @errmsg = 'Cannot update PRODUCT_SOLUTION because PRODUCT does not exist.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_SOLUTION ON SOLUTION FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on SOLUTION */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* SOLUTION applies to PROBLEM on parent delete set null */
+    /* ERWIN_RELATION:CHECKSUM="000239c9", PARENT_OWNER="", PARENT_TABLE="SOLUTION"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM"
+    P2C_VERB_PHRASE="applies to", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="applies_to", FK_COLUMNS="known_issue_number" */
+    UPDATE PROBLEM
+      SET
+        /* %SetFK(PROBLEM,NULL) */
+        PROBLEM.known_issue_number = NULL
+      FROM PROBLEM,deleted
+      WHERE
+        /* %JoinFKPK(PROBLEM,deleted," = "," AND") */
+        PROBLEM.known_issue_number = deleted.known_issue_number
+
+    /* erwin Builtin Trigger */
+    /* SOLUTION is referenced in PRODUCT_SOLUTION on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SOLUTION"
+    CHILD_OWNER="", CHILD_TABLE="PRODUCT_SOLUTION"
+    P2C_VERB_PHRASE="is referenced in", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_referenced_in", FK_COLUMNS="known_issue_number" */
+    IF EXISTS (
+      SELECT * FROM deleted,PRODUCT_SOLUTION
+      WHERE
+        /*  %JoinFKPK(PRODUCT_SOLUTION,deleted," = "," AND") */
+        PRODUCT_SOLUTION.known_issue_number = deleted.known_issue_number
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete SOLUTION because PRODUCT_SOLUTION exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_SOLUTION ON SOLUTION FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on SOLUTION */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @insknown_issue_number char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* SOLUTION applies to PROBLEM on parent update set null */
+  /* ERWIN_RELATION:CHECKSUM="00024f88", PARENT_OWNER="", PARENT_TABLE="SOLUTION"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM"
+    P2C_VERB_PHRASE="applies to", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="applies_to", FK_COLUMNS="known_issue_number" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(known_issue_number)
+  BEGIN
+    UPDATE PROBLEM
+      SET
+        /* %SetFK(PROBLEM,NULL) */
+        PROBLEM.known_issue_number = NULL
+      FROM PROBLEM,deleted
+      WHERE
+        /* %JoinFKPK(PROBLEM,deleted," = "," AND") */
+        PROBLEM.known_issue_number = deleted.known_issue_number
+  END
+
+  /* erwin Builtin Trigger */
+  /* SOLUTION is referenced in PRODUCT_SOLUTION on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SOLUTION"
+    CHILD_OWNER="", CHILD_TABLE="PRODUCT_SOLUTION"
+    P2C_VERB_PHRASE="is referenced in", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_referenced_in", FK_COLUMNS="known_issue_number" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(known_issue_number)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,PRODUCT_SOLUTION
+      WHERE
+        /*  %JoinFKPK(PRODUCT_SOLUTION,deleted," = "," AND") */
+        PRODUCT_SOLUTION.known_issue_number = deleted.known_issue_number
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update SOLUTION because PRODUCT_SOLUTION exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+
+
+CREATE TRIGGER tD_SUPPORT_REPRESENTATIVE ON SUPPORT_REPRESENTATIVE FOR DELETE AS
+/* erwin Builtin Trigger */
+/* DELETE trigger on SUPPORT_REPRESENTATIVE */
+BEGIN
+  DECLARE  @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+    /* erwin Builtin Trigger */
+    /* SUPPORT_REPRESENTATIVE is responsible for PROBLEM on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00027c65", PARENT_OWNER="", PARENT_TABLE="SUPPORT_REPRESENTATIVE"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM"
+    P2C_VERB_PHRASE="is responsible for", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_responsible_for", FK_COLUMNS="support_representative_number" */
+    IF EXISTS (
+      SELECT * FROM deleted,PROBLEM
+      WHERE
+        /*  %JoinFKPK(PROBLEM,deleted," = "," AND") */
+        PROBLEM.support_representative_number = deleted.support_representative_number
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete SUPPORT_REPRESENTATIVE because PROBLEM exists.'
+      GOTO error
+    END
+
+    /* erwin Builtin Trigger */
+    /* SUPPORT_REPRESENTATIVE handles CALL on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SUPPORT_REPRESENTATIVE"
+    CHILD_OWNER="", CHILD_TABLE="CALL"
+    P2C_VERB_PHRASE="handles", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="handles", FK_COLUMNS="support_representative_number" */
+    IF EXISTS (
+      SELECT * FROM deleted,CALL
+      WHERE
+        /*  %JoinFKPK(CALL,deleted," = "," AND") */
+        CALL.support_representative_number = deleted.support_representative_number
+    )
+    BEGIN
+      SELECT @errno  = 30001,
+             @errmsg = 'Cannot delete SUPPORT_REPRESENTATIVE because CALL exists.'
+      GOTO error
+    END
+
+
+    /* erwin Builtin Trigger */
+    RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
+CREATE TRIGGER tU_SUPPORT_REPRESENTATIVE ON SUPPORT_REPRESENTATIVE FOR UPDATE AS
+/* erwin Builtin Trigger */
+/* UPDATE trigger on SUPPORT_REPRESENTATIVE */
+BEGIN
+  DECLARE  @numrows int,
+           @nullcnt int,
+           @validcnt int,
+           @inssupport_representative_number char(18),
+           @errno   int,
+           @severity int,
+           @state    int,
+           @errmsg  varchar(255)
+
+  SELECT @numrows = @@rowcount
+  /* erwin Builtin Trigger */
+  /* SUPPORT_REPRESENTATIVE is responsible for PROBLEM on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0002a434", PARENT_OWNER="", PARENT_TABLE="SUPPORT_REPRESENTATIVE"
+    CHILD_OWNER="", CHILD_TABLE="PROBLEM"
+    P2C_VERB_PHRASE="is responsible for", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_responsible_for", FK_COLUMNS="support_representative_number" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(support_representative_number)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,PROBLEM
+      WHERE
+        /*  %JoinFKPK(PROBLEM,deleted," = "," AND") */
+        PROBLEM.support_representative_number = deleted.support_representative_number
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update SUPPORT_REPRESENTATIVE because PROBLEM exists.'
+      GOTO error
+    END
+  END
+
+  /* erwin Builtin Trigger */
+  /* SUPPORT_REPRESENTATIVE handles CALL on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SUPPORT_REPRESENTATIVE"
+    CHILD_OWNER="", CHILD_TABLE="CALL"
+    P2C_VERB_PHRASE="handles", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="handles", FK_COLUMNS="support_representative_number" */
+  IF
+    /* %ParentPK(" OR",UPDATE) */
+    UPDATE(support_representative_number)
+  BEGIN
+    IF EXISTS (
+      SELECT * FROM deleted,CALL
+      WHERE
+        /*  %JoinFKPK(CALL,deleted," = "," AND") */
+        CALL.support_representative_number = deleted.support_representative_number
+    )
+    BEGIN
+      SELECT @errno  = 30005,
+             @errmsg = 'Cannot update SUPPORT_REPRESENTATIVE because CALL exists.'
+      GOTO error
+    END
+  END
+
+
+  /* erwin Builtin Trigger */
+  RETURN
+error:
+   RAISERROR (@errmsg, -- Message text.
+              @severity, -- Severity (0~25).
+              @state) -- State (0~255).
+    rollback transaction
+END
+
+go
+
+
